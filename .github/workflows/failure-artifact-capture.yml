@@ -60,3 +60,27 @@ jobs:
               title: `CI: failure artifacts for run ${github.event.workflow_run.id}`,
               body
             });
+
+      - name: Notify Slack (optional)
+        if: ${{ secrets.SLACK_WEBHOOK_URL != '' }}
+        env:
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}"
+          payload="{\"text\":\"CI failure: artifacts for run ${RUN_ID} in repository ${GITHUB_REPOSITORY}. See ${RUN_URL}\"}"
+          curl -sSf -X POST -H 'Content-type: application/json' --data "$payload" "${{ secrets.SLACK_WEBHOOK_URL }}" || echo "Slack notify failed"
+
+      - name: Send email notification (optional)
+        if: ${{ secrets.SMTP_SERVER && secrets.SMTP_USERNAME && secrets.SMTP_PASSWORD && secrets.EMAIL_RECIPIENT }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "CI failure artifacts for run ${{ github.event.workflow_run.id }} in ${{ github.repository }}"
+          to: ${{ secrets.EMAIL_RECIPIENT }}
+          from: ${{ secrets.EMAIL_FROM }}
+          body: |
+            The workflow "Puppeteer smoke test" failed for run ${{ github.event.workflow_run.id }} in repository ${{ github.repository }}.
+            Artifacts were downloaded and an issue was created with inline screenshots. Visit: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${{ github.event.workflow_run.id }}
