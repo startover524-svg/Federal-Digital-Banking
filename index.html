@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Federal Digital Banking</title>
+  <script type="module" crossorigin src="/assets/index-BVX4NEWG.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B5CsElOP.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#home">
+        <span class="brand-mark">FDB</span>
+        Federal Digital Banking
+      </a>
+      <nav class="nav-bar">
+        <a href="#home">Home</a>
+        <a href="#login">Login</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#transfer">Transfer</a>
+        <a href="#loans">Loans</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <span class="header-cta">Start your banking journey</span>
+      <a id="header-register" class="button button-primary" href="#apply">Register now</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="login-section" id="login">
+      <div class="container section-shell">
+        <div class="section-intro">
+          <p class="eyebrow">Customer login</p>
+          <h2>Access your account securely.</h2>
+          <p>Log in to unlock the account dashboard and explore the banking interface.</p>
+        </div>
+        <div class="login-grid">
+          <form id="login-form" class="form-card">
+            <h3>Login</h3>
+            <label for="login-username">Username</label>
+            <input type="text" id="login-username" placeholder="alexcarter" required />
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="Enter password" required />
+            <button class="button button-primary" type="submit">Sign in</button>
+            <p class="form-note" id="login-note">Use the username and password you registered with.</p>
+          </form>
+          <aside class="register-panel">
+            <div>
+              <p class="eyebrow">Register now</p>
+              <h3>Create your secure account in minutes.</h3>
+              <p>Set up your username and password, then return here to access the account dashboard instantly.</p>
+              <a class="button button-secondary" href="#apply">Start registration</a>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="dashboard-section section-hidden" id="dashboard">
+      <div class="container section-shell">
+        <div class="section-head">
+          <p class="eyebrow">Account dashboard</p>
+          <div class="dashboard-top">
+            <h2>Welcome back, <span id="welcome-name">Customer</span>.</h2>
+            <button id="signout-button" class="button button-secondary">Sign out</button>
+          </div>
+          <div id="just-registered" class="just-registered section-hidden">
+            <p class="eyebrow">Just registered</p>
+            <p><strong id="jr-fullname">Full Name</strong> — <span id="jr-account-number">000000000</span> — <strong id="jr-balance">$0</strong></p>
+          </div>
+        </div>
+        <div class="dashboard-grid">
+          <div class="dashboard-card summary-card">
+            <div>
+              <p class="card-label">Total balance</p>
+              <strong id="dashboard-balance">$7,900,000</strong>
+            </div>
+            <div class="status-pill">Active</div>
+          </div>
+          <div class="dashboard-card stats-card">
+            <div>
+              <p class="card-label">Credit card limit</p>
+              <strong id="credit-limit">$1,000,000</strong>
+            </div>
+            <div>
+              <p class="card-label">Available credit</p>
+              <strong id="available-credit">$1,000,000</strong>
+            </div>
+          </div>
+        </div>
+        <div class="account-cards">
+          <article class="account-card">
+            <div class="account-card-top">
+              <span>Checking</span>
+              <strong id="everyday-balance">$4,320.45</strong>
+            </div>
+            <p>Everyday account with instant debit card access and no monthly fee.</p>
+          </article>
+        </div>
+        <section class="account-history-card">
+          <div class="section-head">
+            <p class="eyebrow">Account history</p>
+            <h3>Recent activity</h3>
+            <div class="history-actions"></div>
+          </div>
+          <div id="history-table" class="history-table">
+            <div class="history-row history-header">
+              <span>Date</span>
+              <span>Description</span>
+              <span>Amount</span>
+              <span>Status</span>
+            </div>
+            
+            
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="hero" id="home">
+      <div class="container hero-shell">
+        <div class="hero-copy">
+          <p class="eyebrow">Trusted corporate banking</p>
+          <h1>Professional banking solutions for growing enterprises.</h1>
+          <p>Secure accounts, payment controls, and real-time data built for finance teams and business leaders.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#login">Sign in</a>
+            <a class="button button-secondary" href="#features">See services</a>
+          </div>
+          <div class="hero-badges">
+            <span>Global coverage</span>
+            <span>Bank-grade security</span>
+            <span>24/7 client support</span>
+          </div>
+        </div>
+
+        <aside id="hero-account-overview" class="hero-panel section-hidden">
+          <div class="panel-ribbon">Account overview</div>
+          <div class="panel-header">
+            <div>
+              <span class="panel-label">Business</span>
+              <h3>Federal Corporate Account</h3>
+            </div>
+            <span class="status-badge">Protected</span>
+          </div>
+          <div class="panel-balance">
+            <span>Available balance</span>
+            <strong id="hero-balance">$7,900,000</strong>
+          </div>
+          <div class="panel-metrics">
+            <div>
+              <p>Spend</p>
+              <strong>$0</strong>
+            </div>
+            <div>
+              <p>Savings</p>
+              <strong>100%</strong>
+            </div>
+            <div>
+              <p>Cashback</p>
+              <strong>3.2%</strong>
+            </div>
+          </div>
+          <div class="panel-activity">
+            <div>
+              <span>Salary deposit</span>
+              <strong>+$0</strong>
+            </div>
+            <div>
+              <span>Mobile payment</span>
+              <strong>-$0</strong>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Built for enterprise</p>
+          <h2>Integrated banking services for modern organizations.</h2>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3>Secure access</h3>
+            <p>Biometric login, fraud monitoring, and end-to-end encryption for every transaction.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Instant transfers</h3>
+            <p>Move money between accounts and pay bills immediately with a one-click workflow.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">📈</div>
+            <h3>Financial insights</h3>
+            <p>Spending summaries, savings nudges, and actionable insights help customers stay on track.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="transfer-section" id="transfer">
+      <div class="container section-shell">
+        <div class="section-head">
+          <p class="eyebrow">Transfer funds</p>
+          <h2>Move money in seconds.</h2>
+        </div>
+        <div class="transfer-shell">
+          <form id="transfer-form" class="form-card">
+            <label for="transfer-recipient">Recipient name</label>
+            <input type="text" id="transfer-recipient" placeholder="Alex Carter" required />
+            <label for="transfer-name-on-account">Name on receiving account</label>
+            <input type="text" id="transfer-name-on-account" placeholder="Alex Carter" required />
+            <label for="transfer-account-number">Receiving account number</label>
+            <input type="text" id="transfer-account-number" placeholder="123456789012" minlength="6" maxlength="20" pattern="\d+" required />
+            <label for="transfer-routing-number">Routing number</label>
+            <input type="text" id="transfer-routing-number" placeholder="021000021" minlength="9" maxlength="9" pattern="\d{9}" required />
+            <label for="transfer-zip">Receiving ZIP code</label>
+            <input type="text" id="transfer-zip" placeholder="10001" minlength="5" maxlength="10" pattern="\d{5}" required />
+            <label for="transfer-amount">Amount</label>
+            <input type="number" id="transfer-amount" placeholder="250" min="1" required />
+            <label for="transfer-note">Note</label>
+            <input type="text" id="transfer-note" placeholder="Monthly rent" />
+            <button class="button button-primary" type="submit">Send transfer</button>
+            <p class="form-note" id="transfer-note-text">Transfers shown here do not move real money.</p>
+          </form>
+          <div class="transfer-highlights">
+            <div class="highlight-card">
+              <p>Next available transfer</p>
+              <strong>Instant</strong>
+            </div>
+            <div class="highlight-card">
+              <p>Daily transfer limit</p>
+              <strong>Unlimited</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="apply" id="apply">
+      <div class="container section-shell">
+        <div class="section-head">
+          <p class="eyebrow">Register now</p>
+          <h2>Create your secure account in minutes.</h2>
+        </div>
+        <div class="apply-panel">
+          <div>
+            <h3>Start your banking journey</h3>
+            <p>Create a username and password, access your dashboard, and manage checking, savings, and loans with confidence.</p>
+          </div>
+          <form id="signup-form" class="form-card">
+            <label for="signup-first-name">First name</label>
+            <input type="text" id="signup-first-name" placeholder="Alex" required />
+            <label for="signup-last-name">Last name</label>
+            <input type="text" id="signup-last-name" placeholder="Carter" required />
+            <label for="signup-account-number">Account number</label>
+            <input type="text" id="signup-account-number" placeholder="123456789" minlength="9" maxlength="9" pattern="\d{9}" required />
+            <label for="signup-pin">PIN</label>
+            <input type="password" id="signup-pin" placeholder="1234" minlength="4" maxlength="4" pattern="\d{4}" required />
+            <label for="signup-ssn-last4">Last 4 digits of SSN</label>
+            <input type="text" id="signup-ssn-last4" placeholder="6789" minlength="4" maxlength="4" pattern="\d{4}" required />
+            <label for="signup-username">Username</label>
+            <input type="text" id="signup-username" placeholder="alexcarter" required />
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" placeholder="Create password" required />
+            <div id="signup-admin-wrapper" style="display:none"><label for="signup-is-admin" class="admin-label"><input type="checkbox" id="signup-is-admin"> Make account an admin</label></div>
+            <button class="button button-primary" type="submit">Register now</button>
+            <p class="form-note" id="form-note"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="container section-shell">
+        <div class="section-head">
+          <p class="eyebrow">Contact support</p>
+          <h2>We’re here to help.</h2>
+        </div>
+        <div class="contact-panel">
+          <div>
+            <p>Need help with your account, transfer, or loan?</p>
+            <ul>
+              <li>Phone: 917-464-0563</li>
+              <li>Chat: Available 24/7</li>
+            </ul>
+          </div>
+            <div class="contact-action">
+            <a class="button button-primary" href="#login">Customer support</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2026 Federal Digital Banking</p>
+      <p>Privacy · Terms · Security</p>
+    </div>
+  </footer>
+
+</body>
+</html>
