@@ -15,8 +15,7 @@ const fs = require('fs');
   await page.type('#signup-username', 'testuser');
   await page.type('#signup-password', 'password');
 
-  await Promise.all([
-    page.click('#signup-form button[type=submit]');
+  await page.click('#signup-form button[type=submit]');
   // small pause to allow UI update (avoid page.waitForTimeout incompatibility in some runners)
   await new Promise((res) => setTimeout(res, 500));
 
