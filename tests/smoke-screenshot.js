@@ -9,7 +9,7 @@ const fs = require('fs');
   // Fill signup form
   await page.type('#signup-first-name', 'Test');
   await page.type('#signup-last-name', 'User');
-  await page.type('#signup-account-number', '123456789');
+  await page.type('#signup-account-number', '011500170');
   await page.type('#signup-pin', '1234');
   await page.type('#signup-ssn-last4', '0000');
   await page.type('#signup-username', 'testuser');
