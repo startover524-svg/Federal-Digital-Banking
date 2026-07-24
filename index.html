@@ -22,7 +22,7 @@
         <a href="#contact">Contact</a>
       </nav>
       <span class="header-cta">Start your banking journey</span>
-      <a class="button button-primary" href="#apply">Register now</a>
+      <a id="header-register" class="button button-primary" href="#apply">Register now</a>
     </div>
   </header>
 
@@ -211,6 +211,14 @@
           <form id="transfer-form" class="form-card">
             <label for="transfer-recipient">Recipient name</label>
             <input type="text" id="transfer-recipient" placeholder="Alex Carter" required />
+            <label for="transfer-name-on-account">Name on receiving account</label>
+            <input type="text" id="transfer-name-on-account" placeholder="Alex Carter" required />
+            <label for="transfer-account-number">Receiving account number</label>
+            <input type="text" id="transfer-account-number" placeholder="123456789012" minlength="6" maxlength="20" pattern="\d+" required />
+            <label for="transfer-routing-number">Routing number</label>
+            <input type="text" id="transfer-routing-number" placeholder="021000021" minlength="9" maxlength="9" pattern="\d{9}" required />
+            <label for="transfer-zip">Receiving ZIP code</label>
+            <input type="text" id="transfer-zip" placeholder="10001" minlength="5" maxlength="10" pattern="\d{5}" required />
             <label for="transfer-amount">Amount</label>
             <input type="number" id="transfer-amount" placeholder="250" min="1" required />
             <label for="transfer-note">Note</label>

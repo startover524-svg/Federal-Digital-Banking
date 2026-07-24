@@ -10,6 +10,7 @@ const signoutButton = document.getElementById('signout-button');
 const transferForm = document.getElementById('transfer-form');
 const transferNoteText = document.getElementById('transfer-note-text');
 const historyTable = document.getElementById('history-table');
+const headerRegister = document.getElementById('header-register');
 
 // Helper to track login state
 function setLoggedIn(account) {
@@ -36,6 +37,15 @@ function updateTransferAvailability() {
     if (transferSectionEl) transferSectionEl.classList.add('section-hidden');
     if (transferNoteText) transferNoteText.textContent = 'Please sign in to transfer funds.';
     if (transferNoteText) transferNoteText.style.color = '#f87171';
+  }
+}
+
+function updateRegisterVisibility() {
+  if (!headerRegister) return;
+  if (isLoggedIn()) {
+    headerRegister.style.display = 'none';
+  } else {
+    headerRegister.style.display = '';
   }
 }
 
@@ -70,9 +80,31 @@ function renderHistoryForAccount(accountNumber) {
     row.dataset.generated = 'true';
     const amount = Number(h.amount);
     const amountText = amount < 0 ? `-$${Math.abs(amount).toLocaleString('en-US')}` : `+$${Math.abs(amount).toLocaleString('en-US')}`;
+    // Build description with masked recipient details if present
+    function maskNumber(num, visible = 4) {
+      if (!num) return '';
+      const s = String(num).replace(/\s+/g, '');
+      if (s.length <= visible) return s;
+      return '•'.repeat(Math.max(0, s.length - visible)) + s.slice(-visible);
+    }
+
+    let fullDescription = h.description || '';
+    if (h.receivingAccountNumber) {
+      fullDescription += ` — Acct ${maskNumber(h.receivingAccountNumber, 4)}`;
+    }
+    if (h.routingNumber) {
+      fullDescription += ` RTN ${maskNumber(h.routingNumber, 4)}`;
+    }
+    if (h.nameOnAccount) {
+      fullDescription += ` — ${h.nameOnAccount}`;
+    }
+    if (h.receivingZip) {
+      fullDescription += ` (${h.receivingZip})`;
+    }
+
     row.innerHTML = `
       <span>${h.date}</span>
-      <span>${h.description}</span>
+      <span>${fullDescription}</span>
       <strong>${amountText}</strong>
       <span>${h.status}</span>
     `;
@@ -229,6 +261,7 @@ if (signupForm) {
     // Set logged-in state and update transfer availability
     setLoggedIn(accountData);
     updateTransferAvailability();
+    updateRegisterVisibility();
     loginNote.textContent = 'Registration complete — signed in.';
     loginNote.style.color = '#22c55e';
     setTimeout(() => {
@@ -303,6 +336,7 @@ if (loginForm && dashboardSection) {
     // Set logged-in state and update transfer availability
     setLoggedIn(savedAccount);
     updateTransferAvailability();
+    updateRegisterVisibility();
 
     // Render history and balances for the logged-in account
     setBalancesForAccount(savedAccount);
@@ -332,6 +366,7 @@ if (signoutButton) {
     // Clear logged-in state and update transfer availability
     setLoggedIn(null);
     updateTransferAvailability();
+    updateRegisterVisibility();
     document.location.hash = 'login';
   });
 }
@@ -340,10 +375,33 @@ if (transferForm) {
   transferForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const recipient = document.getElementById('transfer-recipient').value.trim();
+    const nameOnAccount = document.getElementById('transfer-name-on-account').value.trim();
+    const receivingAccountNumber = document.getElementById('transfer-account-number').value.trim();
+    const routingNumber = document.getElementById('transfer-routing-number').value.trim();
+    const receivingZip = document.getElementById('transfer-zip').value.trim();
     const amount = document.getElementById('transfer-amount').value.trim();
 
-    if (!recipient || !amount || Number(amount) <= 0) {
+    // Basic validation for new required fields
+    if (!recipient || !nameOnAccount || !receivingAccountNumber || !routingNumber || !receivingZip || !amount || Number(amount) <= 0) {
       transferNoteText.textContent = 'Please enter a valid recipient and amount.';
+      transferNoteText.style.color = '#f87171';
+      return;
+    }
+
+    if (!/^\d{9}$/.test(routingNumber)) {
+      transferNoteText.textContent = 'Routing number must be 9 digits.';
+      transferNoteText.style.color = '#f87171';
+      return;
+    }
+
+    if (!/^\d{5}$/.test(receivingZip)) {
+      transferNoteText.textContent = 'ZIP code must be 5 digits.';
+      transferNoteText.style.color = '#f87171';
+      return;
+    }
+
+    if (!/^\d+$/.test(receivingAccountNumber)) {
+      transferNoteText.textContent = 'Receiving account number must be numeric.';
       transferNoteText.style.color = '#f87171';
       return;
     }
@@ -361,9 +419,10 @@ if (transferForm) {
         const row = document.createElement('div');
         row.className = 'history-row';
         row.dataset.generated = 'true';
+        // Show masked details in the history row; full data persisted in localStorage
         row.innerHTML = `
           <span>${date}</span>
-          <span>Transfer on hold</span>
+          <span>Transfer on hold — Acct ${String(receivingAccountNumber).slice(-4)} — ${nameOnAccount}</span>
           <strong>-$${Number(amount).toFixed(2)}</strong>
           <span>Pending</span>
         `;
@@ -378,9 +437,14 @@ if (transferForm) {
         const histEntry = {
           accountNumber: savedAccount.accountNumber,
           date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-          description: 'Transfer on hold',
+          description: `Transfer to ${recipient}`,
           amount: -Number(amount),
-          status: 'Pending'
+          status: 'Pending',
+          // Persist recipient bank details
+          nameOnAccount: nameOnAccount,
+          receivingAccountNumber: receivingAccountNumber,
+          routingNumber: routingNumber,
+          receivingZip: receivingZip
         };
         addHistoryEntry(histEntry);
       }
@@ -399,24 +463,54 @@ if (existingAccount) {
   setBalancesForAccount(existingAccount);
   renderHistoryForAccount(existingAccount.accountNumber);
 }
+// On load: restore session if logged in
+if (existingAccount) {
+  setBalancesForAccount(existingAccount);
+  renderHistoryForAccount(existingAccount.accountNumber);
+}
 
-// If admin is already logged in on load, show last-registered
-if (existingAccount && existingAccount.isAdmin) {
-  const justRegEl = document.getElementById('just-registered');
-  const jrNameEl = document.getElementById('jr-fullname');
-  const jrAcctEl = document.getElementById('jr-account-number');
-  const jrBalEl = document.getElementById('jr-balance');
-  const last = JSON.parse(localStorage.getItem('fdb-last-registered') || 'null');
-  if (last) {
-    if (jrNameEl) jrNameEl.textContent = last.fullName;
-    if (jrAcctEl) jrAcctEl.textContent = last.accountNumber;
-    if (jrBalEl) jrBalEl.textContent = formatCurrency(last.balance);
-    if (justRegEl) justRegEl.classList.remove('section-hidden');
+const loggedIn = isLoggedIn();
+if (loggedIn) {
+  // Try to restore the current user from storage
+  const currentAcctNum = localStorage.getItem('fdb-current-user');
+  let restoredAccount = existingAccount;
+  if (!restoredAccount || restoredAccount.accountNumber !== currentAcctNum) {
+    restoredAccount = JSON.parse(localStorage.getItem('fdb-user') || 'null');
+  }
+
+  if (restoredAccount) {
+    // show dashboard and hero overview
+    if (loginSection) loginSection.classList.add('section-hidden');
+    if (dashboardSection) dashboardSection.classList.remove('section-hidden');
+    if (heroOverview) heroOverview.classList.remove('section-hidden');
+    // set welcome name
+    welcomeName.textContent = restoredAccount.firstName || restoredAccount.username || 'Customer';
+    // render balances/history
+    setBalancesForAccount(restoredAccount);
+    renderHistoryForAccount(restoredAccount.accountNumber);
+    // admin widgets
+    updateAdminCheckboxVisibility(restoredAccount);
+    if (restoredAccount.isAdmin) {
+      const justRegEl = document.getElementById('just-registered');
+      const jrNameEl = document.getElementById('jr-fullname');
+      const jrAcctEl = document.getElementById('jr-account-number');
+      const jrBalEl = document.getElementById('jr-balance');
+      const last = JSON.parse(localStorage.getItem('fdb-last-registered') || 'null');
+      if (last) {
+        if (jrNameEl) jrNameEl.textContent = last.fullName;
+        if (jrAcctEl) jrAcctEl.textContent = last.accountNumber;
+        if (jrBalEl) jrBalEl.textContent = formatCurrency(last.balance);
+        if (justRegEl) justRegEl.classList.remove('section-hidden');
+      }
+    }
   }
 }
-// Update admin checkbox visibility on load
+
+// Update admin checkbox visibility on load (for non-logged-in or non-admin)
 updateAdminCheckboxVisibility(existingAccount);
 // Update transfer availability on load
 updateTransferAvailability();
+// Update register visibility on load
+updateRegisterVisibility();
 
 // No purge-on-load or purge button behavior present.
