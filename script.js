@@ -161,6 +161,14 @@ if (signupForm) {
       return;
     }
 
+    // Only allow registration for these pre-approved website account numbers
+    const allowedAccounts = ['011500170', '011500180'];
+    if (!allowedAccounts.includes(accountNumber)) {
+      signupNote.textContent = 'Registration is restricted to pre-approved account numbers.';
+      signupNote.style.color = '#f87171';
+      return;
+    }
+
     if (!/^\d{4}$/.test(pin)) {
       signupNote.textContent = 'PIN must be four digits.';
       signupNote.style.color = '#f87171';

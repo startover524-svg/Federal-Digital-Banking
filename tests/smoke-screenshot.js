@@ -45,7 +45,6 @@ const fs = require('fs');
   }
 
   // take screenshot
-  const outDir = './test-output';
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir);
   const path = `${outDir}/signed-in.png`;
   await page.screenshot({ path, fullPage: true });
