@@ -16,9 +16,9 @@ const fs = require('fs');
   await page.type('#signup-password', 'password');
 
   await Promise.all([
-    page.click('#signup-form button[type=submit]'),
-    page.waitForTimeout(500)
-  ]);
+    page.click('#signup-form button[type=submit]');
+  // small pause to allow UI update (avoid page.waitForTimeout incompatibility in some runners)
+  await new Promise((res) => setTimeout(res, 500));
 
   // wait for header register to be hidden
   await page.waitForFunction(() => {
