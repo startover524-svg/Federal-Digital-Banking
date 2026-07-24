@@ -27,6 +27,23 @@ const fs = require('fs');
     return style.display === 'none';
   }, { timeout: 5000 });
 
+  // Verify explicitly: fail the test if header register is still visible
+  const outDir = './test-output';
+  const headerVisible = await page.evaluate(() => {
+    const el = document.getElementById('header-register');
+    if (!el) return false;
+    const s = window.getComputedStyle(el);
+    return !(s.display === 'none' || s.visibility === 'hidden' || el.hidden);
+  });
+  if (headerVisible) {
+    if (!fs.existsSync(outDir)) fs.mkdirSync(outDir);
+    const failPath = `${outDir}/signed-in-failure.png`;
+    await page.screenshot({ path: failPath, fullPage: true });
+    console.error('Header register CTA is visible after sign-in — failing test.');
+    await browser.close();
+    process.exit(1);
+  }
+
   // take screenshot
   const outDir = './test-output';
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir);
