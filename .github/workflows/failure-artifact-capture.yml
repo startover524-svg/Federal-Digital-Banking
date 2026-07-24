@@ -1,0 +1,62 @@
+name: Capture failure artifacts
+
+on:
+  workflow_run:
+    workflows: ["Puppeteer smoke test"]
+    types: [completed]
+
+jobs:
+  capture:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts from failed run
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ github.event.workflow_run.id }}
+          path: downloaded-artifacts
+
+      - name: List downloaded files
+        run: ls -la downloaded-artifacts || true
+
+      - name: Create issue with failure screenshot
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const path = './downloaded-artifacts';
+            const files = [];
+            if (fs.existsSync(path)) {
+              const walk = (dir) => fs.readdirSync(dir).forEach(f => {
+                const p = `${dir}/${f}`;
+                if (fs.statSync(p).isDirectory()) walk(p);
+                else files.push(p);
+              });
+              walk(path);
+            }
+
+            let body = `Automated failure capture for [run](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID || github.event.workflow_run.id}).\n\n`;
+            if (files.length === 0) {
+              body += 'No artifacts were found attached to the failed run.';
+            } else {
+              for (const f of files) {
+                try {
+                  const buf = fs.readFileSync(f);
+                  const b64 = buf.toString('base64');
+                  body += `\n### Artifact: ${f.replace(path + '/', '')}\n\n`;
+                  body += `<img alt=\"artifact\" src=\"data:image/png;base64,${b64}\" />\n`;
+                } catch (err) {
+                  body += `\nCould not embed ${f}: ${err.message}\n`;
+                }
+              }
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `CI: failure artifacts for run ${github.event.workflow_run.id}`,
+              body
+            });
